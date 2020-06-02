@@ -443,19 +443,55 @@ $(function () {
 // show giỏ hàng
 $(function () {
 
-    var $overlay = $('.cart-overlay');
-    var $cartPopUp = $('.desktop-cart-wrapper .quickview-cart');
-    var $btnClose = $(".desktop-cart-wrapper .btnCloseQVCart");
-    $(".desktop-cart-wrapper > a").on('click', function () {
-        $cartPopUp.css('display', 'block');
+    var box1 = document.querySelector('.desktop-cart-wrapper .quickview-cart');
+    var box2 = document.querySelector('.mobile-cart-wrapper .quickview-cart');
+
+	function show1() {
+		$(".cart-overlay1").addClass('open');	
+        box1.style.display = 'block';	
+        box2.style.display = 'block';	
+	}
+
+	function hide1() {
+		$(".cart-overlay1").removeClass('open');	
+        box1.style.display = 'none';	
+        box2.style.display = 'none';
+	}
+
+	$(".desktop-cart-wrapper .btnCloseQVCart").click(function(){
+		hide1();
     });
-    $overlay.on('click', function () {
-        $(this).removeClass('open');
-        $cartPopUp.css('display', 'none');
-    });
-    $btnClose.on('click', function () {
-        $cartPopUp.css('display', 'none');
-    });
+    
+    $(".mobile-cart-wrapper .btnCloseQVCart").click(function(){
+		hide1();
+	});
+
+	var outside1 = function(event) {
+		if (!box1.contains(event.target)) {
+			hide1();
+			this.removeEventListener(event.type, outside1);
+        }
+        if (!box2.contains(event.target)) {
+			hide1();
+			this.removeEventListener(event.type, outside1);
+		}
+	}
+
+	document.querySelector('.desktop-cart-wrapper > a').addEventListener('click', function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		show1();
+		document.addEventListener('click', outside1);
+	});
+
+    document.querySelector('.mobile-cart-wrapper > a').addEventListener('click', function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		show1();
+		document.addEventListener('click', outside1);
+	});
+ 
+
 });
 jQuery(document).ready(function () {
     var offset = 220;
